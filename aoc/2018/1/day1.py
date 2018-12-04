@@ -987,11 +987,23 @@ dataSet = """-1
 
 dataList = dataSet.splitlines()
 startVal = 0
+list2 = []
+list3 = []
 
 for num in dataList: 
-    if num[0] == '+':
-        startVal = startVal + int(num[1:])
-    else:
-        startVal = startVal - int(num[1:])
+    startVal += int(num)
 
-print(startVal)
+print(startVal) # printing the result for part 1
+
+# part 2
+start = 0
+seen = []
+for item in dataSet.splitlines():
+    start += int(item)
+
+    if start in seen:
+        print(start)
+    else:
+        seen.append(start)
+
+print(seen)
