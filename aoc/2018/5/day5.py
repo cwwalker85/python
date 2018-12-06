@@ -33,7 +33,6 @@ print(len(string))
 lower = []
 upper = []
 results = []
-checked = []
 
 for i in alphabet:
     
@@ -45,8 +44,7 @@ for i in alphabet:
         found = False
         checkChar = i + checkCase(i)
         startPosition = part2.find(checkChar)
-        checked.append(checkChar)
-
+        
         if (startPosition > -1):            
             part2 = part2[:startPosition] + part2[startPosition+2:]
             found = True
@@ -61,5 +59,5 @@ union = zip(lower,upper)
 for pair in union:
     results.append(pair[0] + pair[1])
 
-print(checked)
+print(results)
 print(min(results))
