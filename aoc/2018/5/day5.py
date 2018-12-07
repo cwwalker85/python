@@ -30,23 +30,23 @@ print(len(string))
 
 # part 2
 
-lower = []
-upper = []
 results = []
 
 part2 = 'aAbbbcCCcdDDD'
 
 for i in alphabet:
+
+    lower = []
+    upper = []
     
     # part2 = open('inputs.txt').read()
     if (i=='a'): part2 = 'aAbbbcCCcdDDD'
     found = True
 
     while (found == True):
+        found = False
     	for j in alphabet:
     		if(i != j):
-    
-        		found = False
         		checkChar = i + checkCase(i)
         		startPosition = part2.find(checkChar)
         
@@ -58,6 +58,9 @@ for i in alphabet:
         lower.append(len(part2))
     else:
         upper.append(len(part2))
+        
+    print(i)
+    print(part2)
     
 # union = zip(lower,upper)
 
