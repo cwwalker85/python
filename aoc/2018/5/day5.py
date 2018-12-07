@@ -34,30 +34,35 @@ lower = []
 upper = []
 results = []
 
+part2 = 'aAbbbcCCcdDDD'
+
 for i in alphabet:
     
-    part2 = open('inputs.txt').read()
+    # part2 = open('inputs.txt').read()
+    if (i=='a'): part2 = 'aAbbbcCCcdDDD'
     found = True
 
     while (found == True):
+    	for j in alphabet:
+    		if(i != j):
     
-        found = False
-        checkChar = i + checkCase(i)
-        startPosition = part2.find(checkChar)
+        		found = False
+        		checkChar = i + checkCase(i)
+        		startPosition = part2.find(checkChar)
         
-        if (startPosition > -1):            
-            part2 = part2[:startPosition] + part2[startPosition+2:]
-            found = True
+        		if (startPosition > -1):            
+            		part2 = part2[:startPosition] + part2[startPosition+2:]
+            		found = True
 
     if (i.islower() == True):
         lower.append(len(part2))
     else:
         upper.append(len(part2))
     
-union = zip(lower,upper)
+# union = zip(lower,upper)
 
-for pair in union:
-    results.append(pair[0] + pair[1])
+# for pair in union:
+    # results.append(pair[0] + pair[1])
 
-print(results)
-print(min(results))
+# print(results)
+# print(min(results))
