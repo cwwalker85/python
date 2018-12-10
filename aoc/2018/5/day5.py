@@ -3,8 +3,13 @@ import itertools
 import sys
 import string
 
+
+
+# part 1
 alphabet = string.ascii_lowercase + string.ascii_uppercase
+lowerSet = string.ascii_lowercase
 string = open('inputs.txt').read()
+original = open('inputs.txt').read()
 
 def checkCase(c):
     val = ''
@@ -28,44 +33,41 @@ while (found == True):
 print(len(string))
 
 
+
 # part 2
+def removeChar(string,char):
+    found = True
+    newString = string
 
-results = []
+    while (found == True):
+        found = False
+        posLower = newString.find(char)
+        posUpper = newString.find(char.upper())
 
-part2 = 'aAbbbcCCcdDDD'
+        if (posLower > -1):
+            found = True
+            newString = newString.replace(char,'')
 
-for i in alphabet:
+        elif (posUpper > -1):
+            found = True
+            newString = newString.replace(char.upper(),'')
 
-	lower = []
-	upper = []
-	
-	# part2 = open('inputs.txt').read()
-	if (i=='a'): part2 = 'aAbbbcCCcdDDD'
-	found = True
+    return newString
 
-	while (found == True):
-		found = False
-		for j in alphabet:
-			if(i != j):
-				checkChar = i + checkCase(i)
-				startPosition = part2.find(checkChar)
+for c in lowerSet:
+    newstring = removeChar(original,c)
+    
+    found = True
+    while (found == True):
+        found = False
 
-				if (startPosition > -1):            
-					part2 = part2[:startPosition] + part2[startPosition+2:]
-					found = True
+        for i in alphabet:
+            checkChar = i + checkCase(i)
+            startPos = newstring.find(checkChar)
+        
+            if (startPos > -1):            
+                newstring = newstring[:startPos] + newstring[startPos+2:]
+                found = True
 
-	if (i.islower() == True):
-		lower.append(len(part2))
-	else:
-		upper.append(len(part2))
+    print(c + ': ' + str(len(newstring)))
 
-	print(i)
-	print(part2)
-
-# union = zip(lower,upper)
-
-# for pair in union:
-# results.append(pair[0] + pair[1])
-
-# print(results)
-# print(min(results))
