@@ -60,7 +60,8 @@ for line in newSet:
         currentGuard = findGuard(guardID)
         continue
     else:
-        allGuards[currentGuard].entries.append(line)
+        if (currentGuard != ''):
+            allGuards[currentGuard].entries.append(line)
 
 print(str(allGuards[0].id) + ': ' + str(allGuards[0].entries))
 print(str(allGuards[1].id) + ': ' + str(allGuards[1].entries))
