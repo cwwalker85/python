@@ -29,11 +29,12 @@ newSet = sorted(dataset, key=lambda x: re.search(r"(?<=\[)(.*)(?=\])",x).group(0
 
 allGuards = [] # All guard objects
 seen = [] # All unique guard ids
+idRegex = r"(?<=Guard #)(.*)(?= begins)"
 
 # finds each unique guard and adds them to the allguards list
 for entry in newSet:
     if (entry.find('Guard') > -1):
-        guardID = re.search(r"(?<=Guard #)(.*)(?= begins)",entry).group(0)
+        guardID = re.search(idRegex,entry).group(0)
         if (guardID not in seen):
 
             class Guard(object):
@@ -55,7 +56,7 @@ currentGuard = ''
 # loops through all entries and adds them to their respective guard objects
 for line in newSet:
     if (line.find('Guard') > -1):
-        guardID = re.search(r"(?<=Guard #)(.*)(?= begins)",line).group(0)
+        guardID = re.search(idRegex)",line).group(0)
         currentGuard = findGuard(guardID)
         continue
     else:
