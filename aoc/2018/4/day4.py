@@ -56,7 +56,7 @@ currentGuard = ''
 # loops through all entries and adds them to their respective guard objects
 for line in newSet:
     if (line.find('Guard') > -1):
-        guardID = re.search(idRegex)",line).group(0)
+        guardID = re.search(idRegex,line).group(0)
         currentGuard = findGuard(guardID)
         continue
     else:
