@@ -4,44 +4,66 @@ import string
 import datetime
 import re
 
-sample = """[1518-10-31 00:58] wakes up
-[1518-02-27 00:57] wakes up
-[1518-04-05 00:03] falls asleep
-[1518-06-03 00:18] falls asleep
-[1518-08-06 00:39] falls asleep
-[1518-08-15 00:54] falls asleep
-[1518-03-07 00:00] falls asleep
-[1518-05-01 00:12] falls asleep
-[1518-06-17 00:53] wakes up
-[1518-03-13 00:13] falls asleep
-[1518-08-05 00:34] wakes up
-[1518-11-23 00:57] wakes up
-[1518-07-01 23:59] Guard #1301 begins shift
-[1518-02-08 00:51] wakes up
-[1518-11-10 00:59] wakes up
-[1518-07-06 00:01] falls asleep
-[1518-07-08 00:11] falls asleep
-[1518-04-04 00:40] wakes up
-[1518-04-26 00:04] wakes up
-[1518-03-26 00:35] falls asleep
-[1518-06-05 00:33] falls asleep
-[1518-07-25 23:56] Guard #433 begins shift
-[1518-10-20 00:33] wakes up
-[1518-02-05 00:44] falls asleep
-[1518-02-15 00:58] wakes up
-[1518-03-20 00:51] wakes up
-[1518-11-02 00:36] wakes up
-[1518-03-05 23:46] Guard #401 begins shift
-[1518-05-31 00:39] wakes up
-[1518-09-11 00:09] falls asleep
-[1518-04-15 00:39] wakes up
-[1518-09-20 23:58] Guard #1877 begins shift"""
+sample = """[1518-11-01 00:00] Guard #10 begins shift
+[1518-11-01 00:05] falls asleep
+[1518-11-01 00:25] wakes up
+[1518-11-01 00:30] falls asleep
+[1518-11-01 00:55] wakes up
+[1518-11-01 23:58] Guard #99 begins shift
+[1518-11-02 00:40] falls asleep
+[1518-11-02 00:50] wakes up
+[1518-11-03 00:05] Guard #10 begins shift
+[1518-11-03 00:24] falls asleep
+[1518-11-03 00:29] wakes up
+[1518-11-04 00:02] Guard #99 begins shift
+[1518-11-04 00:36] falls asleep
+[1518-11-04 00:46] wakes up
+[1518-11-05 00:03] Guard #99 begins shift
+[1518-11-05 00:45] falls asleep
+[1518-11-05 00:55] wakes up"""
 
 dataset = sample.split('\n')
 
-for line in dataset:
-    print(re.search(r"(?<=\[)(.*)(?=\])",line).group(0))
-
+# Sort list of all entries by date
 newSet = sorted(dataset, key=lambda x: re.search(r"(?<=\[)(.*)(?=\])",x).group(0))
 
-print(newSet)
+allGuards = [] # All guard objects
+seen = [] # All unique guard ids
+
+# finds each unique guard and adds them to the allguards list
+for entry in newSet:
+    if (entry.find('Guard') > -1):
+        guardID = re.search(r"(?<=Guard #)(.*)(?= begins)",entry).group(0)
+        if (guardID not in seen):
+
+            class Guard(object):
+                id = guardID
+                entries = []
+                timeAwake = []
+
+            allGuards.append(Guard)
+            seen.append(guardID)
+
+# id of guard in allguards by id found in the loop
+def findGuard(id):
+    for i in range(len(allGuards)):
+        if (allGuards[i].id == id):
+            return i
+
+currentGuard = ''
+
+# loops through all entries and adds them to their respective guard objects
+for line in newSet:
+    if (line.find('Guard') > -1):
+        guardID = re.search(r"(?<=Guard #)(.*)(?= begins)",line).group(0)
+        currentGuard = findGuard(guardID)
+        continue
+    else:
+        allGuards[currentGuard].entries.append(line)
+
+print(str(allGuards[0].id) + ': ' + str(allGuards[0].entries))
+print(str(allGuards[1].id) + ': ' + str(allGuards[1].entries))
+
+# loop through all guard time entries and finds the time awake and the overlap
+# for j in range(len(allGuards)):
+
