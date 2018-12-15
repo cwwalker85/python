@@ -63,9 +63,45 @@ for line in newSet:
         if (currentGuard != ''):
             allGuards[currentGuard].entries.append(line)
 
-print(str(allGuards[0].id) + ': ' + str(allGuards[0].entries))
-print(str(allGuards[1].id) + ': ' + str(allGuards[1].entries))
-
 # loop through all guard time entries and finds the time awake and the overlap
-# for j in range(len(allGuards)):
 
+highest = 0
+laziest = 0
+
+for j in range(len(allGuards)):
+    awake = []
+    for k in allGuards[j].entries:
+        check = False
+        for l in range(12): # by Month
+            if (int(k[6:8]) == l):
+                
+                check = False
+                for m in range(31): # by Day in Month
+                    if (int(k[9:11]) == m):
+                        
+                        check = False
+                        for n in range(60): # Minute in Midnight Hour
+                            # print('minute: ' + str(n))
+                            awake.append(0)
+
+                            if (int(k[15:17]) == n):
+                                
+                                if (k.find('falls') > -1):
+                                    print(k)
+                                    check = True
+
+                                if (k.find('wakes') > -1):
+                                    print(k)
+                                    check = False
+
+                            if (check == True):
+                                print(k)
+                                awake[n] += 1       
+                                if(awake[n] > highest):
+                                    highest = awake[n]
+                                    laziest = allGuards[j].id
+
+    print(awake)
+
+print(str(laziest) + ': ' + str(highest))                                
+                            
