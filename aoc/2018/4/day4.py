@@ -1,7 +1,5 @@
 import os 
 import sys
-import string
-import datetime
 import re
 
 sample = """[1518-11-01 00:00] Guard #10 begins shift
@@ -22,86 +20,76 @@ sample = """[1518-11-01 00:00] Guard #10 begins shift
 [1518-11-05 00:45] falls asleep
 [1518-11-05 00:55] wakes up"""
 
-dataset = sample.split('\n')
+data_set = sample.split('\n')
 
 # Sort list of all entries by date
-newSet = sorted(dataset, key=lambda x: re.search(r"(?<=\[)(.*)(?=\])",x).group(0))
+new_set = sorted(data_set, key=lambda x: re.search(r"(?<=\[)(.*)(?=\])", x).group(0))
 
-allGuards = [] # All guard objects
-seen = [] # All unique guard ids
+all_guards = []  # All guard objects
+seen = []  # All unique guard ids
 idRegex = r"(?<=Guard #)(.*)(?= begins)"
 
-# finds each unique guard and adds them to the allguards list
-for entry in newSet:
-    if (entry.find('Guard') > -1):
-        guardID = re.search(idRegex,entry).group(0)
-        if (guardID not in seen):
+# finds each unique guard and adds them to the all guards list
+for entry in new_set:
+    if entry.find('Guard') > -1:
+        guard_id = re.search(idRegex, entry).group(0)
+        if guard_id not in seen:
 
             class Guard(object):
-                id = guardID
+                id = guard_id
                 entries = []
                 timeAwake = []
 
-            allGuards.append(Guard)
-            seen.append(guardID)
+            all_guards.append(Guard)
+            seen.append(guard_id)
 
-# id of guard in allguards by id found in the loop
-def findGuard(id):
-    for i in range(len(allGuards)):
-        if (allGuards[i].id == id):
+
+# id of guard in all guards by id found in the loop
+def find_guard(gid):
+    for i in range(len(all_guards)):
+        if all_guards[i].id == gid:
             return i
 
-currentGuard = ''
+
+current_guard = ''
 
 # loops through all entries and adds them to their respective guard objects
-for line in newSet:
-    if (line.find('Guard') > -1):
-        guardID = re.search(idRegex,line).group(0)
-        currentGuard = findGuard(guardID)
+for line in new_set:
+    if line.find('Guard') > -1:
+        guard_id = re.search(idRegex, line).group(0)
+        current_guard = find_guard(guard_id)
         continue
     else:
-        if (currentGuard != ''):
-            allGuards[currentGuard].entries.append(line)
+        if current_guard != '':
+            all_guards[current_guard].entries.append(line)
 
 # loop through all guard time entries and finds the time awake and the overlap
 
 highest = 0
 laziest = 0
 
-for j in range(len(allGuards)):
-    awake = []
-    for k in allGuards[j].entries:
-        check = False
-        for l in range(12): # by Month
-            if (int(k[6:8]) == l):
-                
-                check = False
-                for m in range(31): # by Day in Month
-                    if (int(k[9:11]) == m):
-                        
-                        check = False
-                        for n in range(60): # Minute in Midnight Hour
-                            # print('minute: ' + str(n))
-                            awake.append(0)
+for j in range(len(all_guards)):
 
-                            if (int(k[15:17]) == n):
-                                
-                                if (k.find('falls') > -1):
-                                    print(k)
-                                    check = True
+    awake = [0] * 60
+    range_start = -1
+    range_end = -1
 
-                                if (k.find('wakes') > -1):
-                                    print(k)
-                                    check = False
+    for k in all_guards[j].entries:
+        this_minute = int(k[15:17])
 
-                            if (check == True):
-                                print(k)
-                                awake[n] += 1       
-                                if(awake[n] > highest):
-                                    highest = awake[n]
-                                    laziest = allGuards[j].id
+        if k.find('falls') > -1:
+            range_start = this_minute
+
+        elif k.find('wakes') > -1:
+            range_end = this_minute
+
+            for l in range(range_start,range_end):
+                awake[l] += 1
+
+                if awake[l] > highest:
+                    highest = awake[l]
+                    laziest = all_guards[j].id
 
     print(awake)
 
-print(str(laziest) + ': ' + str(highest))                                
-                            
+print(str(laziest) + ': ' + str(highest))
